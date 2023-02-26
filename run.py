@@ -14,8 +14,9 @@ import csv
 import datetime as dt
 import os
 from bs4 import BeautifulSoup
-from configuration.encrypt_password import encrypted_password, username
-
+from configuration.key.encrypt import username, f, fernet
+import importlib.resources
+from cryptography.fernet import Fernet
 
 # URL
 URL = 'https://developer.riotgames.com/'
@@ -45,11 +46,16 @@ print(tech)
 import whois
 print(whois.whois(URL))
 
+# Obtenemos la password encriptada
+with importlib.resources.open_text('configuration.key', 'encrypted_password') as f:
+    encrypted_password = f.read()
 
+encrypted_password = encrypted_password.encode()
+decrypt_password = fernet.decrypt(encrypted_password).decode('utf-8')
 
 # Credentials:
 user = username
-password = encrypted_password
+password = decrypt_password
 
 # Abrir el navegador con la URL
 s = Service(ChromeDriverManager().install())
@@ -80,6 +86,5 @@ sleep(3)
 next_button = driver.find_element_by_xpath("/html/body/div[2]/div/div/div[2]/div/div/button")
 next_button.click()
 sleep(5)
-
 
 
