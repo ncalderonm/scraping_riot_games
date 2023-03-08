@@ -97,6 +97,22 @@ summoner_name = 'Adelphos1313'
 
 
 
+################
+### SCRAPING ###
+################
+
+URL_SCRAP="https://developer.riotgames.com/apis"
+
+# Abrir el navegador con la URL
+s = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=s)
+
+driver.get(URL_SCRAP)
+sleep(1)
+driver.maximize_window()
+sleep(2)
+
+
 ######################
 ### API RIOT GAMES ###
 ######################
@@ -111,19 +127,13 @@ for i in range(1):
     response = requests.get(url)
     ("Hace el response")   
     print(response)
-    # Si la respuesta es exitosa
+    # Si es correcto:
     if response.status_code == 200:
         featured_games = response.json()['gameList']
         print(featured_games)
 
-        # Imprime información sobre las partidas destacadas
-        print(f'Partidas destacadas ({i+1}/100):')
-        for game in featured_games:
-            print(f'- {game["gameMode"]} ({game["gameType"]})')
-            for participant in game['participants']:
-                print(f'  - {participant["summonerName"]} ({participant["championId"]})')
     else:
-        # maneja el error
+        # Devuelve el error
         print(f"Error: {response.status_code}")
         
     # espera 1.2 segundos entre cada solicitud
