@@ -1,0 +1,5 @@
+lista_var_team = ['win_blue', 'baron_first_blue', 'dif_baron', 'first_kill_blue', 'dif_kills', 'dragon_first_blue', 'dif_dragon', 'inhibitor_first_blue', 'dif_inhibitor_kill', 'herald_first_blue', 'dif_herald', 'tower_first_blue', 'dif_tower', 'dif_pings', 'dif_magic_dmg', 'dif_physical_dmg', 'dif_neutral_minions', 'dif_total_minions', 'dif_gold_earned', 'dif_gold_spent', 'dif_true_dmg', 'dif_vision_score']
+
+variables_to_remove = ['killParticipation', 'kda', 'maxCsAdvantageOnLaneOpponent', 'moreEnemyJungleThanOpponent', 'teamDamagePercentage', 'visionScoreAdvantageLaneOpponent', 'visionScorePerMinute', 'shortestTimeToAceFromFirstTakedown', 'fastestLegendary', 'damagePerMinute', 'damageTakenOnTeamPercentage', 'controlWardTimeCoverageInRiverOrEnemyHalf', 'earliestBaron', 'earliestDragonTakedown', 'earliestElderDragon', 'effectiveHealAndShielding', 'firstTurretKilled', 'gameLength', 'goldPerMinute', 'jungleCsBefore10Minutes']
+
+mapping_region = {'KR': 1, 'EUW1': 2, 'NA1': 3}
