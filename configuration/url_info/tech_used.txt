@@ -1,1 +1,1 @@
-{'web-servers': ['Nginx'], 'javascript-frameworks': ['AngularJS', 'Backbone.js', 'Underscore.js', 'Modernizr', 'Prototype', 'React', 'RequireJS', 'Vue.js', 'Zepto', 'jQuery'], 'web-frameworks': ['Twitter Bootstrap']}
+{}

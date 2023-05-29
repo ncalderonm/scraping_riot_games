@@ -2,7 +2,7 @@
 ###############
 ### Imports ###
 ###############
-
+# Imports
 from selenium import webdriver
 import requests
 from selenium.webdriver.chrome.service import Service
@@ -13,6 +13,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 import pandas as pd
+import numpy as np
 import random
 import csv
 import datetime as dt
@@ -27,9 +28,31 @@ from riotwatcher import LolWatcher, ApiError
 import time
 import json
 import whois
-from configuration.PostgreSQL.conection_postgre import conn
+from datetime import datetime
+from sklearn.linear_model import LogisticRegression, Lasso
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from project_files.variables import *
+import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier
+import matplotlib.pyplot as plt
+import ssl
+from sklearn.feature_selection import RFE
+from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.pipeline import make_pipeline
+from kneed import KneeLocator
+import subprocess
+#from adjustText import adjust_text
+import sys
 
-
+timestamp = datetime.now()
+hora_inicio_ejecucion = timestamp.strftime('%Y-%m-%d %H-%M-%S')
+print("La hora de inicio de la ejecución es:", hora_inicio_ejecucion)
 
 
 ###########
@@ -37,6 +60,7 @@ from configuration.PostgreSQL.conection_postgre import conn
 ###########
 
 
+print("Entramos en la URL")
 # URL
 URL = 'https://developer.riotgames.com/'
 
@@ -69,107 +93,97 @@ with open('configuration/url_info/whoisURL.txt', 'w') as file:
 
 
 
-###################
-### CREDENTIALS ###
-###################
+###########################
+#### 1) API EXTRACCIÓN ####
+###########################
+
+print("\n")
+print("Inicio de la extracción de datos de  la API de Riot Games.")
+print("\n")
+
+# Ruta al archivo .py que deseas ejecutar
+ruta_archivo_1 = os.path.abspath('1_api_extraction.py')
+
+# Ejecutar el archivo .py utilizando el intérprete de Python
+subprocess.run(['py', ruta_archivo_1], shell= True)
+
+print("\n")
+print("Fin de la extracción de datos de la api de Riot Games. ")
+print("\n")
 
 
-# Obtenemos la password encriptada
-with importlib.resources.open_text('configuration.key', 'encrypted_password') as f:
-    encrypted_password = f.read()
+#########################
+#### 2) PREPROCESADO ####
+#########################
 
-encrypted_password = encrypted_password.encode()
-decrypt_password = fernet.decrypt(encrypted_password).decode('utf-8')
+print("\n")
+print("Inicio del proprocesado de los datos.")
+print("\n")
 
-# Credentials:
-user = username
-password = decrypt_password
-summoner_name = sys.argv[1]
+# Ruta al archivo .py que deseas ejecutar
+ruta_archivo_2 = '2_preprocess.py'
 
-# Obtención password
-with open('configuration/key/api.txt', 'r') as f:
-    api = f.readline()
+# Ejecutar el archivo .py utilizando el intérprete de Python
+subprocess.run(['python', ruta_archivo_2])
 
-api_key = api
-# Especifica el nombre del servidor y el nombre de invocador del jugador que deseas buscar
-region = 'euw1'
-summoner_name = 'Adelphos1313'
+print("\n")
+print("Fin del preprocesado de los datos. ")
+print("\n")
 
 
+###############################
+#### 3) Variable Selection ####
+###############################
 
-################
-### SCRAPING ###
-################
+print("\n")
+print("Inicio del proceso de selección de variables.")
+print("\n")
 
-URL_SCRAP="https://developer.riotgames.com/apis"
+# Ruta al archivo .py que deseas ejecutar
+ruta_archivo_3 = '3_variable_selection.py'
 
-# Abrir el navegador con la URL
-s = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=s)
+# Ejecutar el archivo .py utilizando el intérprete de Python
+subprocess.run(['python', ruta_archivo_3])
 
-driver.get(URL_SCRAP)
-sleep(1)
-driver.maximize_window()
-sleep(2)
-
-
-######################
-### API RIOT GAMES ###
-######################
+print("\n")
+print("Fin del proceso de selección de variabless. ")
+print("\n")
 
 
-# Obtiene información sobre las partidas en curso destacadas
-url = f'https://{region}.api.riotgames.com/lol/spectator/v4/featured-games?api_key={api_key}'
+##################################
+#### 4) Modelos de predicción ####
+##################################
 
-# Realiza 100 solicitudes cada 2 minutos
-for i in range(1):
-    print("Entra al for")
-    response = requests.get(url)
-    ("Hace el response")   
-    print(response)
-    # Si es correcto:
-    if response.status_code == 200:
-        featured_games = response.json()['gameList']
-        print(featured_games)
+print("\n")
+print("Inicio de la creación de modelos de predicción.")
+print("\n")
 
-    else:
-        # Devuelve el error
-        print(f"Error: {response.status_code}")
-        
-    # espera 1.2 segundos entre cada solicitud
-    time.sleep(1.2)
-    
-    # cada 20 solicitudes, espera 2 segundos
-    if i % 20 == 0 and i > 0:
-        print(f"Esperando 2 segundos para continuar... ({i+1}/100)")
-        time.sleep(2)
+# Ruta al archivo .py que deseas ejecutar
+ruta_archivo_4 = '4_predictive_models.py'
 
-with open("tables/last_matches_real_time.json", "w") as f:
-    json.dump(featured_games, f)
+# Ejecutar el archivo .py utilizando el intérprete de Python
+subprocess.run(['python', ruta_archivo_4])
 
-# Cargar el archivo JSON
-with open('tables/last_matches_real_time.json') as f:
-    data = json.load(f)
-
-# Convertir el JSON a un DataFrame de pandas
-df = pd.json_normalize(data)
-
-# Guardar el DataFrame en un archivo CSV
-df.to_csv('tables/csv/games.csv', index=False)
+print("\n")
+print("Fin de la creación de modelos de predicción. ")
+print("\n")
 
 
 
-###################
-### POSTGRE SQL ###
-###################
+####################################
+#### 4) Interacción con PowerBi ####
+####################################
 
+print("\n")
+print("Inicio de la creación de modelos de predicción.")
+print("\n")
 
-# Crear un cursor
-cur = conn.cursor()
+# Ruta al archivo .py que deseas ejecutar
+ruta_archivo_4 = '4_predictive_models.py'
 
+# Ejecutar el archivo .py utilizando el intérprete de Python
+subprocess.run(['python', ruta_archivo_4])
 
-# Cerrar la conexión
-cur.close()
-conn.close()
-
-# Voy a escribir algo para probar
+print("\n")
+print("Fin de la creación de modelos de predicción. ")
+print("\n")

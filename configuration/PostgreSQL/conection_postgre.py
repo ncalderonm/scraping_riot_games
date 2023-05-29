@@ -1,4 +1,5 @@
 import psycopg2
+from sqlalchemy import create_engine
 
 # Obtención credenciales de PostgreSQL
 with open('configuration/key/secret_postgre.txt', 'r') as f:
@@ -18,3 +19,5 @@ conn = psycopg2.connect(
     password= password
 )
 
+# Crear el motor de SQLAlchemy
+engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
