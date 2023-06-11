@@ -542,7 +542,7 @@ plt.barh(range(len(perm.importances_mean)), perm.importances_mean, align='center
 plt.yticks(range(len(perm.importances_mean)), X.columns.tolist())
 plt.xlabel('Importancia')
 plt.ylabel('Variables')
-plt.title('Importancia de las variables - Permutación en Red Neuronal')
+plt.title('Importancia de las variables - Permutación en SVM')
 
 # Añadir los valores de importancia en las barras para que sea más legible
 for i, coef in enumerate(perm.importances_mean):
